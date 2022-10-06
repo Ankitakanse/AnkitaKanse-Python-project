@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 st.title("ANKITA ADHIK KANSE")
 st.write("MSCDSAI")
-st.header("Python Project 2 dashboard")
+st.header("Python")
 st.latex(r'''
     a + ar + a r^2 + a r^3 + \cdots + a r^{n-1} =
     \sum_{k=0}^{n-1} ar^k =

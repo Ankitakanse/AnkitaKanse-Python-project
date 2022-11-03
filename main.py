@@ -1,48 +1,47 @@
-import streamlit as st
 import numpy as np
 import pandas as pd
-st.title("ANKITA ADHIK KANSE")
-st.write("MSCDSAI")
-st.header("Python")
-st.latex(r'''
-    a + ar + a r^2 + a r^3 + \cdots + a r^{n-1} =
-    \sum_{k=0}^{n-1} ar^k =
-    a \left(\frac{1-r^{n}}{1-r}\right)
-    ''')
-st.caption('This is a string that explains something above.')
-code = '''def hello():
-    print("Hello, Streamlit!")'''
-st.code(code, language='python')
-st.text('This is some text.')
+import streamlit as st
+from pandas_profiling import ProfileReport
+from streamlit_pandas_profiling import st_profile_report
 
-df = pd.DataFrame(
-   np.random.randn(10, 5),
-   columns=('col %d' % i for i in range(5)))
+# Web App Title
+st.markdown('''
+# EDA on covid 19 CountryWise Data 
+This is the **EDA report** created in Streamlit using the **pandas-profiling** library.
+''')
 
-st.table(df)
+# Upload CSV data
+with st.sidebar.header('1. Upload your CSV data'):
+    uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
+    st.sidebar.markdown("""
+[Example CSV input file](https://raw.githubusercontent.com/Ankitakanse/AnkitaKanse-Python-project/main/covid%2019%20CountryWise.csv)
+""")
 
-chart_data = pd.DataFrame(
-    np.random.randn(20, 3),
-    columns=['a', 'b', 'c'])
-
-st.line_chart(chart_data)
-
-chart_data = pd.DataFrame(
-    np.random.randn(20, 3),
-    columns=['a', 'b', 'c'])
-
-st.area_chart(chart_data)
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-   st.header("A cat")
-   st.image("https://static.streamlit.io/examples/cat.jpg")
-
-with col2:
-   st.header("A dog")
-   st.image("https://static.streamlit.io/examples/dog.jpg")
-
-with col3:
-   st.header("An owl")
-   st.image("https://static.streamlit.io/examples/owl.jpg")
+# Pandas Profiling Report
+if uploaded_file is not None:
+    @st.cache
+    def load_csv():
+        csv = pd.read_csv(uploaded_file)
+        return csv
+    df = load_csv()
+    pr = ProfileReport(df, explorative=True)
+    st.header('**Input DataFrame**')
+    st.write(df)
+    st.write('---')
+    st.header('**Pandas Profiling Report**')
+    st_profile_report(pr)
+else:
+    st.info('Awaiting for CSV file to be uploaded.')
+    if st.button('Press to generate EDA report on covid 19 CountryWise data'):
+        # Example data
+        @st.cache
+        def load_data():
+            a = pd.read_csv('https://raw.githubusercontent.com/Ankitakanse/AnkitaKanse-Python-project/main/covid%2019%20CountryWise.csv')
+            return a
+        df = load_data()
+        pr = ProfileReport(df, explorative=True)
+        st.header('**Input DataFrame**')
+        st.write(df)
+        st.write('---')
+        st.header('**Pandas Profiling Report**')
+        st_profile_report(pr)

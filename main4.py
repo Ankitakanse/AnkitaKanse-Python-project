@@ -24,7 +24,7 @@ if uploaded_file is not None:
         csv = pd.read_csv(uploaded_file)
         return csv
     df = load_csv()
-    pr = ProfileReport(df, explorative=True)
+    pr = st_profile_report(df, explorative=True)
     st.header('**Input DataFrame**')
     st.write(df)
     st.write('---')
@@ -32,16 +32,4 @@ if uploaded_file is not None:
     st_profile_report(pr)
 else:
     st.info('Awaiting for CSV file to be uploaded.')
-    if st.button('Press to generate EDA report on covid 19 CountryWise data'):
-        # Example data
-        @st.cache
-        def load_data():
-            a = pd.read_csv('https://raw.githubusercontent.com/Ankitakanse/AnkitaKanse-Python-project/main/covid%2019%20CountryWise.csv')
-            return a
-        df = load_data()
-        pr = ProfileReport(df, explorative=True)
-        st.header('**Input DataFrame**')
-        st.write(df)
-        st.write('---')
-        st.header('**Pandas Profiling Report**')
-        st_profile_report(pr)
+    

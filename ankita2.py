@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plost
+#import plost
 from PIL import Image
 
 # Page setting
@@ -31,17 +31,7 @@ b4.metric("Humidity", "86%", "4%")
 c1, c2 = st.columns((7,3))
 with c1:
     st.markdown('### Heatmap')
-    plost.time_hist(
-    data=seattle_weather,
-    date='date',
-    x_unit='week',
-    y_unit='day',
-    color='temp_max',
-    aggregate='median',
-    legend=None)
+    
 with c2:
     st.markdown('### Bar chart')
-    plost.donut_chart(
-        data=stocks,
-        theta='q2',
-        color='company')
+   

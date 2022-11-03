@@ -1,67 +1,47 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import base64
+import numpy as np
+import plost
+from PIL import Image
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
+# Page setting
+st.set_page_config(layout="wide")
 
-st.title('World Population Data')
+with open('style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-st.markdown("""
-This app performs simple webscraping and visualisation of wikipedia world population data 
-* **Python libraries:** base64, pandas, streamlit, matplotlib 
-* **Data source:** [wikipedia.com](https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population).
-""")
-choices=['Population By Region', 'Population By Country']
-st.sidebar.header('Choose a Visualisation')
-selected_choice = st.sidebar.selectbox('choose',choices)
-@st.cache
+# Data
+seattle_weather = pd.read_csv('https://raw.githubusercontent.com/tvst/plost/master/data/seattle-weather.csv', parse_dates=['date'])
+stocks = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/data/master/stocks_toy.csv')
 
-def load(choice):
-    url = "https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population"
-    html = pd.read_html(url, header = 0, flavor = 'bs4')
-    df = html[0]
-    df = df.drop(['Notes'], axis = 1) # Deletes 'Notes' column 
-    df = df.drop(['Source (official or from the United Nations)'], axis = 1) # Deletes 'Source' column 
+# Row A
+a1, a2, a3 = st.columns(3)
+a1.image(Image.open('streamlit-logo-secondary-colormark-darktext.png'))
+a2.metric("Wind", "9 mph", "-8%")
+a3.metric("Humidity", "86%", "4%")
 
-    df = df.iloc[1:]
+# Row B
+b1, b2, b3, b4 = st.columns(4)
+b1.metric("Temperature", "70 °F", "1.2 °F")
+b2.metric("Wind", "9 mph", "-8%")
+b3.metric("Humidity", "86%", "4%")
+b4.metric("Humidity", "86%", "4%")
 
-    df['UN Region'] = df['UN Region'].str.replace('[[b]]', "", regex=True)
-    df['UN Region'] = df['UN Region'].str.replace('[[c]]', "", regex=True)
-    df['UN Region'] = df['UN Region'].str.replace('[[]', "", regex=True)
-
-    df['Percentage of the world'] = df['Percentage of the world'].str.replace("%", "", regex=True)
-    df['Percentage of the world'] = df['Percentage of the world'].astype(float)
-    
-    if choice == choices[0]:
-        result = region(df)
-        result.plot('UN Region', kind = "bar", figsize = (9, 8) )
-
-    
-    else:
-        result = country(df)
-        result.head(20).plot(x = "Country / Dependency", y = "Population", kind = "bar", figsize = (9, 8))
-
-    return result
-# Web scraping of wikipedia world population data page
-def country(df):
-    return df.sort_values(by = ['Population'], ascending=False )
-#group data by regions to count population by each region 
-def region(df):
-    return df.groupby('UN Region', as_index=False).agg({"Population": "sum"}).sort_values(by = ['Population'], ascending = False)
-        
-dataa = load(selected_choice)
-        
-
-st.header('World Population Data')
-st.write('Data Dimension: ' + str(dataa.shape[0]) + ' rows and ' + str(dataa.shape[1]) + ' columns.')
-st.dataframe(dataa)
-
-def filedownload(df):
-    csv = df.to_csv(index = False)
-    b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
-    href = f'<a href = "data:file/csv;base64,{b64}" download = "stats.csv">Download CSV File</a>'
-    return href
-
-st.markdown(filedownload(dataa), unsafe_allow_html = True)
-st.pyplot()
+# Row C
+c1, c2 = st.columns((7,3))
+with c1:
+    st.markdown('### Heatmap')
+    plost.time_hist(
+    data=seattle_weather,
+    date='date',
+    x_unit='week',
+    y_unit='day',
+    color='temp_max',
+    aggregate='median',
+    legend=None)
+with c2:
+    st.markdown('### Bar chart')
+    plost.donut_chart(
+        data=stocks,
+        theta='q2',
+        color='company')

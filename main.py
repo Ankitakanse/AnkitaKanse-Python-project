@@ -17,3 +17,7 @@ with st.sidebar.header('1. Upload your CSV data'):
 [Example CSV input file](https://raw.githubusercontent.com/Ankitakanse/AnkitaKanse-Python-project/main/covid%2019%20CountryWise.csv)
 """)
 
+import seaborn as sns
+a = np.random.random((5, 5))
+sns.heatmap(a,annot=True)
+plt.show()

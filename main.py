@@ -6,7 +6,7 @@ from streamlit_pandas_profiling import st_profile_report
 
 # Web App Title
 st.markdown('''
-# EDA on covid 19 CountryWise Data 
+# EDA on Covid 19 CountryWise Data 
 This is the **EDA report** created in Streamlit using the **pandas-profiling** library.
 ''')
 
@@ -31,7 +31,7 @@ if uploaded_file is not None:
     st.header('**Pandas Profiling Report**')
     st_profile_report(pr)
 else:
-    st.info('Awaiting for CSV file to be uploaded.')
+    st.info('If you want to analyze your data Upload your csv file **.... Awaiting for CSV file to be uploaded.** ')
     if st.button('Press to generate EDA report on covid 19 CountryWise data'):
         # Example data
         @st.cache

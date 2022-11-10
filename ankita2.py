@@ -5,7 +5,7 @@ import numpy as np
 st.title('Uber pickups in NYC')
 
 from PIL import Image
-image = Image.open('sunrise.jpg')
+image = Image.open('sunrise.jpeg')
 
 st.image(image, caption='Sunrise by the mountains')
 
